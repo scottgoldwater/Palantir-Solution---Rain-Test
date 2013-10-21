@@ -23,14 +23,14 @@ namespace palantirSolution
         public bool Visted;
         public char Sink;
         public int Elevation;
-        public bool IsBasin; 
+        public bool IsSink; 
 
         public Node(int hight)
         {
             Elevation = hight;
             Sink = '1';
             Visted = false;
-            IsBasin = false;
+            IsSink = false;
 
         }
     }
@@ -40,7 +40,7 @@ namespace palantirSolution
         private static char _currentSink = '0';
         private static int _numberOfNodes;
         private static int _dimensions;
-        private static Dictionary<int,int> _basinCounter = new Dictionary<int, int>();
+        private static Dictionary<int,int> _sinkCounter = new Dictionary<int, int>();
         
         static void Main()
         {
@@ -79,13 +79,20 @@ namespace palantirSolution
                 {
                     if (CheckIfSink(input, i, j))
                     {
-                        input[i, j].IsBasin = true;
-                        input[i, j].Sink = (char)('A' + _basinCounter.Count);
-                        _basinCounter.Add(_basinCounter.Count,1);
+                        input[i, j].IsSink = true;
+                        input[i, j].Sink = (char)('A' + _sinkCounter.Count);
+                        _sinkCounter.Add(_sinkCounter.Count,1);
                         _numberOfNodes++;
                     }
                 }
             }
+
+            if (_sinkCounter.Count == 1)
+            {
+                Console.WriteLine(Math.Pow(_dimensions,2));
+                return;
+            }
+
 
             while (_numberOfNodes < Math.Pow(_dimensions,2))
             {
@@ -107,7 +114,7 @@ namespace palantirSolution
 
             //PrintArray(input);
             //Console.WriteLine("\nAnswer: ");
-            var sorted = _basinCounter.Values.ToList().OrderByDescending(x => x);
+            var sorted = _sinkCounter.Values.ToList().OrderByDescending(x => x);
             foreach (var number in sorted)
             {
                 Console.Write(number+" ");
@@ -128,7 +135,7 @@ namespace palantirSolution
         {
             int i2 =0, j2 = 0;
             //checks to see if sink and.... water has reached the destination 
-            if (array[i, j].IsBasin)
+            if (array[i, j].IsSink)
             {
                 _currentSink = array[i, j].Sink;
                 return; 
@@ -175,7 +182,7 @@ namespace palantirSolution
             if (!array[i, j].Visted)
             {
                 _numberOfNodes++;
-                _basinCounter[_currentSink - 'A']++;
+                _sinkCounter[_currentSink - 'A']++;
             }
             array[i, j].Visted = true;
         }
@@ -275,7 +282,7 @@ namespace palantirSolution
         {
             int value = array[i,j].Elevation;
             
-            if (array[i, j].IsBasin)
+            if (array[i, j].IsSink)
                 return false;
 
             if (array[i, j].Visted)
