@@ -134,6 +134,7 @@ namespace palantirSolution
         static void Drain(Node[,] array, int i, int j, Direction direction)
         {
             int i2 =0, j2 = 0;
+
             //checks to see if sink and.... water has reached the destination 
             if (array[i, j].IsSink)
             {
